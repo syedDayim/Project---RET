@@ -1,0 +1,14 @@
+// Paste these rules in Firebase Console → Firestore Database → Rules
+// so the app can read/write roommates and expenses.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /roommates/{doc} {
+      allow read, write: if true;
+    }
+    match /expenses/{doc} {
+      allow read, write: if true;
+    }
+  }
+}

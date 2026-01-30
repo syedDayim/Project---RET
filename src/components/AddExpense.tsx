@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Roommate } from '../types'
 import { api } from '../api'
+import { Loader } from './Loader'
 
 interface AddExpenseProps {
   roommates: Roommate[]
@@ -59,20 +60,21 @@ export function AddExpense({ roommates, onAdded }: AddExpenseProps) {
 
   if (roommates.length === 0) {
     return (
-      <section className="section">
-        <h2 className="section-title">Add expense</h2>
-        <p className="empty">Add roommates below first, then you can add expenses.</p>
+      <section className="section expense-card">
+        <h2 className="expense-heading">Add expense</h2>
+        <p className="empty">Add roommates in the Users tab first, then you can add expenses.</p>
       </section>
     )
   }
 
   return (
-    <section className="section">
-      <h2 className="section-title">Add expense</h2>
+    <section className="section expense-card">
+      <h2 className="expense-heading">New expense</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-row">
-          <label>Paid by</label>
+        <div className="expense-field">
+          <label className="expense-label">Paid by</label>
           <select
+            className="expense-select"
             value={paidBy}
             onChange={(e) => setPaidBy(e.target.value)}
             required
@@ -85,25 +87,29 @@ export function AddExpense({ roommates, onAdded }: AddExpenseProps) {
             ))}
           </select>
         </div>
-        <div className="form-row">
-          <label>Amount ({CURRENCY})</label>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+        <div className="expense-field">
+          <label className="expense-label">Amount</label>
+          <div className="expense-amount-wrap">
+            <span className="expense-currency">{CURRENCY}</span>
+            <input
+              className="expense-input"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="form-row">
-          <label>Who was involved (multi-select)</label>
-          <div className="chips">
+        <div className="expense-field">
+          <label className="expense-label">Who was involved</label>
+          <div className="expense-chips">
             {roommates.map((r) => (
               <button
                 key={r.id}
                 type="button"
-                className={`chip ${involved.has(r.id) ? 'selected' : ''}`}
+                className={`expense-chip ${involved.has(r.id) ? 'expense-chip--selected' : ''}`}
                 onClick={() => toggleInvolved(r.id)}
               >
                 {r.name}
@@ -111,21 +117,27 @@ export function AddExpense({ roommates, onAdded }: AddExpenseProps) {
             ))}
           </div>
         </div>
-        <div className="form-row">
-          <label>Note (optional)</label>
+        <div className="expense-field">
+          <label className="expense-label">Note (optional)</label>
           <input
+            className="expense-input"
             type="text"
             placeholder="e.g. Milk, groceries"
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
         </div>
-        {error && <p className="error-msg">{error}</p>}
-        <div className="form-row" style={{ marginTop: '1rem' }}>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Adding…' : 'Add expense'}
-          </button>
-        </div>
+        {error && <p className="expense-error">{error}</p>}
+        <button type="submit" className="expense-submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader variant="inline" />
+              <span>Adding…</span>
+            </>
+          ) : (
+            'Add expense'
+          )}
+        </button>
       </form>
     </section>
   )

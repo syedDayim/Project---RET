@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Roommate } from '../types'
 import { api } from '../api'
+import { Loader } from './Loader'
 
 interface RoommatesProps {
   roommates: Roommate[]
@@ -49,7 +50,14 @@ export function Roommates({ roommates, onChanged }: RoommatesProps) {
           disabled={loading}
         />
         <button type="submit" className="btn btn-ghost" disabled={loading || !name.trim()}>
-          {loading ? 'Adding…' : 'Add'}
+          {loading ? (
+            <>
+              <Loader variant="inline" />
+              <span>Adding…</span>
+            </>
+          ) : (
+            'Add'
+          )}
         </button>
       </form>
       {error && <p className="error-msg">{error}</p>}

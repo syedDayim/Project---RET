@@ -19,26 +19,33 @@ export function ExpenseHistory({ expenses, roommates }: ExpenseHistoryProps) {
 
   return (
     <section className="section">
-      <h2 className="section-title">Expense history</h2>
+      <h2 className="expense-history-heading">History</h2>
       {expenses.length === 0 ? (
-        <p className="empty">No expenses yet. Add one above.</p>
+        <div className="expense-history-empty">No expenses yet. Add one above.</div>
       ) : (
-        <ul className="expense-list">
-          {expenses.map((e) => (
-            <li key={e.id} className="expense-item">
-              <span>
-                <strong>{idToName.get(e.paidBy) ?? e.paidBy}</strong> paid{' '}
+        <div className="expense-history-scroll">
+          <ul className="expense-history-list">
+            {expenses.map((e) => (
+            <li key={e.id} className="expense-history-item">
+              <div className="expense-history-main">
+                <div className="expense-history-who">
+                  {idToName.get(e.paidBy) ?? e.paidBy} paid{e.note ? ` · ${e.note}` : ''}
+                </div>
+                <div className="expense-history-meta">
+                  {e.involved.length > 0 && (
+                    <>Shared with {e.involved.map((id) => idToName.get(id) ?? id).join(', ')}</>
+                  )}
+                  {e.involved.length > 0 ? ' · ' : ''}
+                  {formatDate(e.createdAt)}
+                </div>
+              </div>
+              <div className="expense-history-amount">
                 {e.amount.toFixed(2)} {e.currency}
-                {e.involved.length > 0 && (
-                  <> · shared with {e.involved.map((id) => idToName.get(id) ?? id).join(', ')}</>
-                )}
-                {e.note && <> · {e.note}</>}
-                <br />
-                <small style={{ color: 'var(--muted)' }}>{formatDate(e.createdAt)}</small>
-              </span>
+              </div>
             </li>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   )

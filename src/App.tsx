@@ -6,6 +6,8 @@ import { AddExpense } from './components/AddExpense'
 import { Roommates } from './components/Roommates'
 import { ExpenseHistory } from './components/ExpenseHistory'
 import { Settlements } from './components/Settlements'
+import { Loader } from './components/Loader'
+import { Room105Logo } from './components/Room105Logo'
 import './App.css'
 
 function App() {
@@ -55,14 +57,19 @@ function App() {
   if (loading) {
     return (
       <div className="app">
-        <p className="loading">Loading…</p>
+        <header className="app-header">
+          <Room105Logo size={44} showText />
+        </header>
+        <Loader variant="page" label="Loading…" />
       </div>
     )
   }
 
   return (
     <div className="app">
-      <h1>Roommate Expenses</h1>
+      <header className="app-header">
+        <Room105Logo size={44} showText />
+      </header>
       {!hasApi && (
         <div className="section banner-demo">
           <p className="banner-demo-text">
@@ -98,10 +105,10 @@ function App() {
 
       <div className="tab-panel">
         {activeTab === 'expenses' && (
-          <>
+          <div className="expense-tab">
             <AddExpense roommates={roommates} onAdded={refresh} />
             <ExpenseHistory expenses={expenses} roommates={roommates} />
-          </>
+          </div>
         )}
         {activeTab === 'users' && (
           <Roommates roommates={roommates} onChanged={refresh} />
@@ -115,6 +122,10 @@ function App() {
           </div>
         )}
       </div>
+
+      <footer className="app-footer">
+        <span className="app-version">v2.0.0</span>
+      </footer>
     </div>
   )
 }

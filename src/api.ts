@@ -1,7 +1,10 @@
 import {
   collection,
+  doc,
   getDocs,
   addDoc,
+  deleteDoc,
+  writeBatch,
   serverTimestamp,
   query,
   orderBy,
@@ -62,6 +65,11 @@ export const api = {
     return { roommate }
   },
 
+  async deleteRoommate(id: string): Promise<void> {
+    const db = getDb()
+    await deleteDoc(doc(db, ROOMMATES, id))
+  },
+
   async getExpenses(): Promise<{ expenses: Expense[] }> {
     const db = getDb()
     const q = query(
@@ -71,6 +79,20 @@ export const api = {
     const snap = await getDocs(q)
     const expenses = snap.docs.map((d) => mapExpense(d.id, d.data()))
     return { expenses }
+  },
+
+  async deleteExpense(id: string): Promise<void> {
+    const db = getDb()
+    await deleteDoc(doc(db, EXPENSES, id))
+  },
+
+  async deleteAllExpenses(): Promise<void> {
+    const db = getDb()
+    const snap = await getDocs(collection(db, EXPENSES))
+    if (snap.empty) return
+    const batch = writeBatch(db)
+    snap.docs.forEach((d) => batch.delete(d.ref))
+    await batch.commit()
   },
 
   async addExpense(data: {

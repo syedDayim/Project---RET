@@ -22,7 +22,7 @@ function App() {
 
   const tabs: { id: TabId; label: string }[] = [
     { id: 'expenses', label: 'Expenses' },
-    { id: 'users', label: 'Users' },
+    { id: 'users', label: 'Members' },
     { id: 'who-owes', label: 'Who owes whom' },
     { id: 'coming-soon', label: 'Coming soon' },
   ]
@@ -107,11 +107,13 @@ function App() {
         {activeTab === 'expenses' && (
           <div className="expense-tab">
             <AddExpense roommates={roommates} onAdded={refresh} />
-            <ExpenseHistory expenses={expenses} roommates={roommates} />
+            <ExpenseHistory expenses={expenses} roommates={roommates} onChanged={refresh} />
           </div>
         )}
         {activeTab === 'users' && (
-          <Roommates roommates={roommates} onChanged={refresh} />
+          <div className="members-tab">
+            <Roommates roommates={roommates} onChanged={refresh} />
+          </div>
         )}
         {activeTab === 'who-owes' && (
           <Settlements expenses={expenses} roommates={roommates} />
